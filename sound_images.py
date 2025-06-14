@@ -7,12 +7,12 @@ import time
 import os
 
 # --- Конфигурация ---
-THRESHOLD = 400
+THRESHOLD = 600
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
-SILENCE_TIMEOUT = 2  # секунд тишины до остановки записи
+SILENCE_TIMEOUT = 3  # секунд тишины до остановки записи
 
 # --- Папки ---
 os.makedirs("photos", exist_ok=True)
@@ -40,7 +40,7 @@ silence_timer = None
 session_id = None  # для группы файлов
 
 def take_photo(tag=""):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S_%f")
     filename = f"photos/photo_{tag}_{timestamp}.jpg"
     ret, frame = camera.read()
     if ret:
@@ -57,7 +57,7 @@ try:
 
         if volume > THRESHOLD:
             if not recording:
-                session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+                session_id = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
                 print("🔴 Громкий звук! Запись началась.")
                 recording = True
                 frames = []

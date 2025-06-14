@@ -3,7 +3,8 @@
 ###### Windows
 
 ```zsh
-python -m pip install pyaudio
+pip install pyaudio numpy opencv-python
+.\myenv\Scripts\activate
 ```
 
 ###### GNU/Linux

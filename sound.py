@@ -6,12 +6,12 @@ from collections import deque
 import time
 
 # --- Конфигурация ---
-THRESHOLD = 400  # Порог активации микрофона (чем ниже — тем чувствительнее)
+THRESHOLD = 600  # Порог активации микрофона (чем ниже — тем чувствительнее)
 CHUNK = 1024     # Размер блока аудио
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000     # Частота дискретизации
-SILENCE_TIMEOUT = 2  # Секунды тишины до остановки записи
+SILENCE_TIMEOUT = 3  # Секунды тишины до остановки записи
 
 # --- Инициализация ---
 p = pyaudio.PyAudio()
@@ -47,7 +47,7 @@ try:
             # Проверяем, не истекло ли время тишины
             if time.time() - silence_timer > SILENCE_TIMEOUT:
                 print("⏹️ Тихо. Завершаю запись.")
-                filename = datetime.now().strftime("recording_%Y%m%d_%H%M%S.wav")
+                filename = datetime.now().strftime("%d-%m-%Y_%H-%M-%S.wav")
                 wf = wave.open(f"recordings/{filename}", 'wb') # Под виндой тут будет проблема с путём
                 wf.setnchannels(CHANNELS)
                 wf.setsampwidth(p.get_sample_size(FORMAT))
