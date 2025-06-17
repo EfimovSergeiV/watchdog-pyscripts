@@ -6,7 +6,7 @@ from collections import deque
 import time
 
 # --- Конфигурация ---
-THRESHOLD = 600  # Порог активации микрофона (чем ниже — тем чувствительнее)
+THRESHOLD = 10000  # Порог активации микрофона (чем ниже — тем чувствительнее)
 CHUNK = 1024     # Размер блока аудио
 FORMAT = pyaudio.paInt16
 CHANNELS = 1

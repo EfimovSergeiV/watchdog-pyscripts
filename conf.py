@@ -1,0 +1,4 @@
+# MatterMost
+BOT_TOKEN = ''
+MATTERMOST_URL = ''
+CHANNEL_ID = ''
