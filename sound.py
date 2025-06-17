@@ -5,6 +5,8 @@ from datetime import datetime
 from collections import deque
 import time
 
+from mattermost import send_notification
+
 # --- Конфигурация ---
 THRESHOLD = 10000  # Порог активации микрофона (чем ниже — тем чувствительнее)
 CHUNK = 1024     # Размер блока аудио
@@ -23,6 +25,7 @@ stream = p.open(format=FORMAT,
                 frames_per_buffer=CHUNK)
 
 print("🎙️ Ожидание громкого звука...")
+send_notification("Ожидание звука...")
 
 recording = False
 frames = []
@@ -55,12 +58,14 @@ try:
                 wf.writeframes(b''.join(frames))
                 wf.close()
                 print(f"💾 Записано в файл: {filename}")
+                send_notification(f"Сохранена запись: { filename }")
                 recording = False
         else:
             pass  # Тихо, ждем
 
 except KeyboardInterrupt:
     print("\n🚪 Завершение по Ctrl+C")
+    send_notification("Завершение работы")
 
 finally:
     stream.stop_stream()
