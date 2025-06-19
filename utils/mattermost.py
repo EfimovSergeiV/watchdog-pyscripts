@@ -2,8 +2,8 @@ import requests
 from conf import BOT_TOKEN, MATTERMOST_URL, CHANNEL_ID
 
 
-def send_notification(message="Hello, Mattermost!"):
-    """ Send a notification to the Mattermost channel. """
+def send_notification(message):
+    """ Отправляет сообщение в Mattermost """
    
     url = f"{MATTERMOST_URL}/api/v4/posts"
     headers = {
