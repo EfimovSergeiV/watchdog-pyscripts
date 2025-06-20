@@ -66,7 +66,6 @@ def on_message(ws, message):
             else:
                 print(f"❓ Неизвестная команда: {command}")
                 send_notification(f"Неизвестная команда: `{command}`")
-            
 
     else:
         print("📨 Сообщение не является post:")

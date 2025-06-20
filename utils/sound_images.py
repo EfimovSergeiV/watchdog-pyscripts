@@ -43,7 +43,8 @@ def sound_func():
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 16000
-    SILENCE_TIMEOUT = 3
+    MINIMUM_LOUD_DURATION = 3
+    SILENCE_TIMEOUT = 7
 
     # Инициализая микрофона
     p = pyaudio.PyAudio()
@@ -62,6 +63,7 @@ def sound_func():
     print("🎙️ Начинаем прослушивать...")
     send_notification("Начинаем прослушивать...")
 
+    loud_start_time = None
     recording = False
     frames = []
     silence_timer = None
@@ -72,29 +74,42 @@ def sound_func():
             audio_data = np.frombuffer(data, dtype=np.int16)
             volume = np.linalg.norm(audio_data)
 
+            now = time.time()
+
             if volume > THRESHOLD:
-                if not recording:
-                    print("🔴 Звук обнаружен, начинаю запись...")
+                if loud_start_time is None:
+                    loud_start_time = now
+
+                print(f"Шумим в течении {now - loud_start_time:.2f} секунд, громкость: {volume:.2f}")
+
+                if not recording and (now - loud_start_time) >= MINIMUM_LOUD_DURATION:
+                    print("Обнаружен звук, начинаю запись...")
                     send_notification("Обнаружен звук, начинаю запись...")
                     recording = True
                     frames = []
 
-                if cap is not None:
-                    ret, frame = cap.read()
-                    if ret:
-                        save_image(frame)
-                    else:
-                        print("❌ Ошибка при получении кадра с камеры")
+                    # 💡 Сделать снимок камеры
+                    if cap is not None:
+                        ret, frame = cap.read()
+                        if ret:
+                            save_image(frame)
+                        else:
+                            print("❌ Ошибка при получении кадра с камеры")
 
-                frames.append(data)
-                silence_timer = time.time()
+                if recording:
+                    frames.append(data)
+                    silence_timer = now
 
-            elif recording:
-                frames.append(data)
-                if time.time() - silence_timer > SILENCE_TIMEOUT:
-                    save_recording(frames, p, FORMAT, CHANNELS, RATE)
-                    recording = False
-                    frames = []
+            else:
+                # 🔇 Сброс таймера громкости, если нет устойчивого звука
+                loud_start_time = None
+
+                if recording:
+                    frames.append(data)
+                    if now - silence_timer > SILENCE_TIMEOUT:
+                        save_recording(frames, p, FORMAT, CHANNELS, RATE)
+                        recording = False
+                        frames = []
 
     finally:
         if recording and frames:
