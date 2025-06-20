@@ -1,7 +1,7 @@
 from utils.mattermost import send_notification
 from datetime import datetime
-from collections import deque
 import numpy as np
+from conf import ABSOLUTE_PATH
 
 import time, os, cv2, pyaudio, wave, threading
 
@@ -10,7 +10,7 @@ _stop_event = threading.Event()
 
 
 def save_recording(frames, p, FORMAT, CHANNELS, RATE, duration):
-    directory = "../REC/recordings"
+    directory = "{ABSOLUTE_PATH}/recordings"
     os.makedirs(directory, exist_ok=True)  # Создаем каталог, если нет
 
     filename = datetime.now().strftime("%d-%m-%Y_%H-%M-%S.wav")
@@ -29,7 +29,7 @@ def save_recording(frames, p, FORMAT, CHANNELS, RATE, duration):
 
 def save_image(frame):
     filename = datetime.now().strftime("%d-%m-%Y_%H-%M-%S.jpg")
-    directory = f'../REC/photos/{datetime.now().strftime("%d-%m-%Y")}'
+    directory = f'{ABSOLUTE_PATH}/photos/{datetime.now().strftime("%d-%m-%Y")}'
     os.makedirs(directory, exist_ok=True)
 
     filepath = os.path.join(directory, filename)
@@ -43,8 +43,8 @@ def sound_func():
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 16000
-    MINIMUM_LOUD_DURATION = 3
-    SILENCE_TIMEOUT = 7
+    MINIMUM_LOUD_DURATION = 1   # Минимальная длительность громкого звука для начала записи
+    SILENCE_TIMEOUT = 8         # Время ожидания тишины перед сохранением
 
     # Инициализая микрофона
     p = pyaudio.PyAudio()
