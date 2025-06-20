@@ -9,7 +9,7 @@ _stop_event = threading.Event()
 
 
 
-def save_recording(frames, p, FORMAT, CHANNELS, RATE):
+def save_recording(frames, p, FORMAT, CHANNELS, RATE, duration):
     directory = "../REC/recordings"
     os.makedirs(directory, exist_ok=True)  # Создаем каталог, если нет
 
@@ -23,8 +23,8 @@ def save_recording(frames, p, FORMAT, CHANNELS, RATE):
     wf.writeframes(b''.join(frames))
     wf.close()
 
-    print(f"💾 Запись сохранена: {filepath}")
-    send_notification(f"Сохранена запись: {filename}")
+    print(f"💾({int(duration)} сек.) Запись сохранена: {filepath}")
+    send_notification(f"({int(duration)} сек.) Запись сохранена: {filename}")
 
 
 def save_image(frame):
@@ -63,7 +63,8 @@ def sound_func():
     print("🎙️ Начинаем прослушивать...")
     send_notification("Начинаем прослушивать...")
 
-    loud_start_time = None
+    loud_start_time = None      # Время начала громкого звука
+    record_start_time = None    # Время начала записи
     recording = False
     frames = []
     silence_timer = None
@@ -85,6 +86,7 @@ def sound_func():
                 if not recording and (now - loud_start_time) >= MINIMUM_LOUD_DURATION:
                     print("Обнаружен звук, начинаю запись...")
                     send_notification("Обнаружен звук, начинаю запись...")
+                    record_start_time = time.time()
                     recording = True
                     frames = []
 
@@ -107,14 +109,16 @@ def sound_func():
                 if recording:
                     frames.append(data)
                     if now - silence_timer > SILENCE_TIMEOUT:
-                        save_recording(frames, p, FORMAT, CHANNELS, RATE)
+                        duration = time.time() - record_start_time
+                        save_recording(frames, p, FORMAT, CHANNELS, RATE, duration)
                         recording = False
                         frames = []
 
     finally:
         if recording and frames:
             print("⚠️ Прерывание во время записи — сохраняем вручную...")
-            save_recording(frames, p, FORMAT, CHANNELS, RATE)
+            duration = time.time() - record_start_time
+            save_recording(frames, p, FORMAT, CHANNELS, RATE, duration)
         stream.stop_stream()
         stream.close()
         p.terminate()

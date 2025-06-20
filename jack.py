@@ -1,4 +1,4 @@
-import websocket, json, time, threading
+import websocket, json, time, os, threading
 from utils.mattermost import send_notification
 from conf import WS_URL, BOT_TOKEN, USER_ACCESS
 
@@ -59,6 +59,7 @@ def on_message(ws, message):
                 send_notification("Выключаем миникомпьютер.")
                 stop_sound()
                 ws.close()
+                os.system("shutdown /s /t 1")
 
             elif command in ["вкл", "включи", "разбуди","включить", "запуск", "wake", "старт"]:
                 send_notification("Миникомпьютер уже запущен")
@@ -107,5 +108,4 @@ if __name__ == "__main__":
     try:
         ws.run_forever()
     finally:
-        pass
-        # stop_sound()  # гарантированно остановить при выходе
+        stop_sound()
