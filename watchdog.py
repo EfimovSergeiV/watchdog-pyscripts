@@ -27,6 +27,7 @@ def on_message(ws, message):
         if sender_name in USER_ACCESS:
             if command in WORDS:
                 print("🔔 Разбудим Джека!")
+                send_notification("Пробую разбудить миникомпьютер...")
                 send_wol(MAC_ADDRESS, BROADCAST_IP)
 
     else:
