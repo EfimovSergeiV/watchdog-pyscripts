@@ -1,6 +1,6 @@
 import websocket, json, time, os, threading
 from utils.mattermost import send_notification
-from conf import WS_URL, BOT_TOKEN, USER_ACCESS
+from conf import MATTERMOST_WS, BOT_TOKEN, USER_ACCESS
 
 
 # from utils.sound import sound_func, stop_sound, reset_sound
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     send_notification("Миникомпьютер запущен.")
     websocket.enableTrace(False)
     ws = websocket.WebSocketApp(
-        WS_URL,
+        MATTERMOST_WS,
         on_open=on_open,
         on_message=on_message,
         on_error=on_error,

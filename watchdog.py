@@ -3,7 +3,7 @@ import websocket, json, time
 from utils.wake_on_lan import send_wol
 from utils.mattermost import send_notification
 
-from conf import WS_URL, BOT_TOKEN, USER_ACCESS, MAC_ADDRESS, BROADCAST_IP
+from conf import MATTERMOST_WS, BOT_TOKEN, USER_ACCESS, MAC_ADDRESS, BROADCAST_IP
 
 
 
@@ -61,7 +61,7 @@ def on_open(ws):
 if __name__ == "__main__":
     websocket.enableTrace(False)
     ws = websocket.WebSocketApp(
-        WS_URL,
+        MATTERMOST_WS,
         on_open=on_open,
         on_message=on_message,
         on_error=on_error,

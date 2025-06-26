@@ -10,7 +10,7 @@ _stop_event = threading.Event()
 
 
 def save_recording(frames, p, FORMAT, CHANNELS, RATE, duration):
-    directory = "{ABSOLUTE_PATH}/recordings"
+    directory = f"{ABSOLUTE_PATH}/recordings"
     os.makedirs(directory, exist_ok=True)  # Создаем каталог, если нет
 
     filename = datetime.now().strftime("%d-%m-%Y_%H-%M-%S.wav")
