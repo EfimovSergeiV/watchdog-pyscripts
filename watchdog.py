@@ -27,7 +27,7 @@ def on_message(ws, message):
         if sender_name in USER_ACCESS:
             if command in WORDS:
                 print("🔔 Разбудим Джека!")
-                send_notification("Пробую разбудить миникомпьютер...")
+                send_notification("СЕРВЕР-2: Пробую разбудить миникомпьютер...")
                 send_wol(MAC_ADDRESS, BROADCAST_IP)
 
     else:
@@ -60,11 +60,20 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(False)
-    ws = websocket.WebSocketApp(
-        MATTERMOST_WS,
-        on_open=on_open,
-        on_message=on_message,
-        on_error=on_error,
-        on_close=on_close
-    )
-    ws.run_forever()
+    
+    while True:
+        try:
+            ws = websocket.WebSocketApp(
+                MATTERMOST_WS,
+                on_open=on_open,
+                on_message=on_message,
+                on_error=on_error,
+                on_close=on_close
+            )
+            print("🔁 Подключаемся к WebSocket...")
+            ws.run_forever(ping_interval=30, ping_timeout=10)
+        except Exception as e:
+            print(f"⚠️ Исключение при работе WebSocket: {e}")
+
+        print("⏳ Переподключение через 2 минуты...")
+        time.sleep(120)
