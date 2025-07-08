@@ -29,6 +29,7 @@ def on_message(ws, message):
                 # Запуск первого доступного
                 print(f"Проверка команды 1: запуск первого доступного для пользователя компьютера")
                 send_notification(user['channel_id'], f"{ SERVER_ID }: Пробую разбудить {user['computers'][0]['name']}...")
+                send_wol(user['computers'][0]['mac'], user['computers'][0]['broadcast_ip'])
 
             elif len(command) >= 1 and first_word in WORDS:
                 # Пробуждение нескольких компьютеров по имени или индексу
